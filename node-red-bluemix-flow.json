@@ -1,0 +1,647 @@
+[
+    {
+        "id": "d442295b.bcc25",
+        "type": "tab",
+        "label": "Flow 1"
+    },
+    {
+        "id": "7600d9cf.aac298",
+        "type": "websocket-listener",
+        "z": "",
+        "path": "/ws/voiceControl",
+        "wholemsg": "false"
+    },
+    {
+        "id": "c7592e33.45ad4",
+        "type": "watson-speech-to-text",
+        "z": "d442295b.bcc25",
+        "name": "STT",
+        "continuous": true,
+        "speakerlabels": false,
+        "lang": "en-UK",
+        "langhidden": "en-UK",
+        "langcustom": "NoCustomisationSetting",
+        "langcustomhidden": "",
+        "band": "BroadbandModel",
+        "bandhidden": "BroadbandModel",
+        "password": "IlKTt12nI1lN",
+        "x": 957.833251953125,
+        "y": 476.16668701171875,
+        "wires": [
+            [
+                "271f2f6.815995",
+                "e2d098aa.613308",
+                "42420dd4.99c6dc"
+            ]
+        ]
+    },
+    {
+        "id": "271f2f6.815995",
+        "type": "debug",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "transcription",
+        "x": 1055.2618103027344,
+        "y": 297.7380828857422,
+        "wires": []
+    },
+    {
+        "id": "e2d098aa.613308",
+        "type": "switch",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "property": "transcription",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "switch on",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "switch off",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "give",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "outputs": 4,
+        "x": 1105.833251953125,
+        "y": 476.41668701171875,
+        "wires": [
+            [
+                "3eece271.b344a6"
+            ],
+            [
+                "f57db8ef.f817f8"
+            ],
+            [
+                "c00382e5.3b1b18"
+            ],
+            [
+                "ddff2ea2.ab06b8"
+            ]
+        ]
+    },
+    {
+        "id": "3eece271.b344a6",
+        "type": "switch",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "property": "transcription",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "kitchen",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "living",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "outputs": 3,
+        "x": 1304.333251953125,
+        "y": 221.66668701171875,
+        "wires": [
+            [
+                "1a04257b.75a93b"
+            ],
+            [
+                "be9a95d.c5f61e8"
+            ],
+            [
+                "a0d979f6.fb1d1"
+            ]
+        ]
+    },
+    {
+        "id": "286a4d3b.bbaee2",
+        "type": "websocket out",
+        "z": "d442295b.bcc25",
+        "name": "To Raspberry",
+        "server": "7600d9cf.aac298",
+        "client": "",
+        "x": 2186.1666259765625,
+        "y": 488.0555419921875,
+        "wires": []
+    },
+    {
+        "id": "1a04257b.75a93b",
+        "type": "function",
+        "z": "d442295b.bcc25",
+        "name": "Kitchen = Green",
+        "func": "\nmsg.payload = {};\n\nmsg.payload.action = \"on\";\nmsg.payload.location = \"kitchen\";\nmsg.payload.color = {};\nmsg.payload.color.r = 0;\nmsg.payload.color.g = 255;\nmsg.payload.color.b = 0;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1534.833251953125,
+        "y": 160.41668701171875,
+        "wires": [
+            [
+                "286a4d3b.bbaee2"
+            ]
+        ]
+    },
+    {
+        "id": "be9a95d.c5f61e8",
+        "type": "function",
+        "z": "d442295b.bcc25",
+        "name": "LivingRoom = Red",
+        "func": "\nmsg.payload = {};\n\nmsg.payload.action = \"on\";\nmsg.payload.location = \"livingroom\";\nmsg.payload.color = {};\nmsg.payload.color.r = 255;\nmsg.payload.color.g = 0;\nmsg.payload.color.b = 0;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1544.333251953125,
+        "y": 207.66668701171875,
+        "wires": [
+            [
+                "286a4d3b.bbaee2"
+            ]
+        ]
+    },
+    {
+        "id": "a0d979f6.fb1d1",
+        "type": "function",
+        "z": "d442295b.bcc25",
+        "name": "Missing location",
+        "func": "\nmsg.payload = {};\n\nmsg.payload.action = \"tts\";\nmsg.payload.text = \"I don't know where to switch on the light.\";\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1536.333251953125,
+        "y": 262.66668701171875,
+        "wires": [
+            [
+                "286a4d3b.bbaee2"
+            ]
+        ]
+    },
+    {
+        "id": "f57db8ef.f817f8",
+        "type": "switch",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "property": "transcription",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "kitchen",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "living",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "outputs": 3,
+        "x": 1299.333251953125,
+        "y": 393.66668701171875,
+        "wires": [
+            [
+                "b67a4723.6ac0c"
+            ],
+            [
+                "3b0bd4f8.972c64"
+            ],
+            [
+                "18cfe553.764b3b"
+            ]
+        ]
+    },
+    {
+        "id": "b67a4723.6ac0c",
+        "type": "function",
+        "z": "d442295b.bcc25",
+        "name": "Kitchen ",
+        "func": "\nmsg.payload = {};\n\nmsg.payload.action = \"off\";\nmsg.payload.location = \"kitchen\";\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1509.833251953125,
+        "y": 332.41668701171875,
+        "wires": [
+            [
+                "286a4d3b.bbaee2"
+            ]
+        ]
+    },
+    {
+        "id": "3b0bd4f8.972c64",
+        "type": "function",
+        "z": "d442295b.bcc25",
+        "name": "LivingRoom",
+        "func": "\nmsg.payload = {};\n\nmsg.payload.action = \"off\";\nmsg.payload.location = \"livingroom\";\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1519.333251953125,
+        "y": 379.66668701171875,
+        "wires": [
+            [
+                "286a4d3b.bbaee2"
+            ]
+        ]
+    },
+    {
+        "id": "18cfe553.764b3b",
+        "type": "function",
+        "z": "d442295b.bcc25",
+        "name": "Missing location",
+        "func": "\nmsg.payload = {};\n\nmsg.payload.action = \"tts\";\nmsg.payload.text = \"I don't know where to switch off the light.\";\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1531.333251953125,
+        "y": 434.66668701171875,
+        "wires": [
+            [
+                "286a4d3b.bbaee2"
+            ]
+        ]
+    },
+    {
+        "id": "ddff2ea2.ab06b8",
+        "type": "function",
+        "z": "d442295b.bcc25",
+        "name": "what ?",
+        "func": "\nmsg.payload = {};\n\nmsg.payload.action = \"tts\";\nmsg.payload.text = \"I don't understand what you said.\";\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1294.7777099609375,
+        "y": 732.9998779296875,
+        "wires": [
+            [
+                "286a4d3b.bbaee2"
+            ]
+        ]
+    },
+    {
+        "id": "c38939d3.61baf",
+        "type": "weather_insights",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "host": "twcservice.mybluemix.net",
+        "service": "/forecast/daily/10day.json",
+        "geocode": "",
+        "units": "e",
+        "language": "en-US",
+        "x": 1687.3886108398438,
+        "y": 542.4444885253906,
+        "wires": [
+            [
+                "c0daba1d.ea55f8"
+            ]
+        ]
+    },
+    {
+        "id": "c00382e5.3b1b18",
+        "type": "switch",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "property": "transcription",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "paris",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "Paris",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "new york",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "New York",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "outputs": 5,
+        "x": 1296.8888549804688,
+        "y": 566.111083984375,
+        "wires": [
+            [
+                "3a7c0978.4e18be"
+            ],
+            [
+                "3a7c0978.4e18be"
+            ],
+            [
+                "caef2a1d.f8d7d"
+            ],
+            [
+                "caef2a1d.f8d7d"
+            ],
+            [
+                "9dbda9f0.9477b8"
+            ]
+        ]
+    },
+    {
+        "id": "3a7c0978.4e18be",
+        "type": "function",
+        "z": "d442295b.bcc25",
+        "name": "Weather in Paris",
+        "func": "\n\nmsg.payload = \"48.85,2.35\";\nmsg.city = \"Paris\";\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1490.9996948242188,
+        "y": 514.1109924316406,
+        "wires": [
+            [
+                "c38939d3.61baf"
+            ]
+        ]
+    },
+    {
+        "id": "caef2a1d.f8d7d",
+        "type": "function",
+        "z": "d442295b.bcc25",
+        "name": "Weather in NYC",
+        "func": "\nmsg.payload = \"40.71,-74\";\nmsg.city = \" New York City\";\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1488.7774658203125,
+        "y": 566.1110229492188,
+        "wires": [
+            [
+                "c38939d3.61baf"
+            ]
+        ]
+    },
+    {
+        "id": "9dbda9f0.9477b8",
+        "type": "function",
+        "z": "d442295b.bcc25",
+        "name": "Missing location",
+        "func": "\nmsg.payload = {};\n\nmsg.payload.action = \"tts\";\nmsg.payload.text = \"I don't understand in which city you want the weather forecast.\";\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1481.66650390625,
+        "y": 615.3333129882812,
+        "wires": [
+            [
+                "286a4d3b.bbaee2"
+            ]
+        ]
+    },
+    {
+        "id": "c0daba1d.ea55f8",
+        "type": "function",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "func": "\nmsg.payload = {};\n\nmsg.payload.action = \"tts\";\nmsg.payload.text = \"Tomorrow, in \" + msg.city + \", \" + msg.forecasts[1].day.narrative;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1853.8887939453125,
+        "y": 540.0555419921875,
+        "wires": [
+            [
+                "8ff20b05.69e89"
+            ]
+        ]
+    },
+    {
+        "id": "7da81a0c.ed493c",
+        "type": "debug",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 1907.833251953125,
+        "y": 721.1666870117188,
+        "wires": []
+    },
+    {
+        "id": "8ff20b05.69e89",
+        "type": "function",
+        "z": "d442295b.bcc25",
+        "name": "Winds EN",
+        "func": "if(msg.payload.text) {\n    tokens = msg.payload.text.split(\" \");\n    \n    if(tokens && tokens.length>0) {\n        text = '';\n        windFound = false;\n        \n        for(i=0;i<tokens.length;i++) {\n            token = tokens[i];    \n        \n            if(token) {\n                \n                if(windFound) {\n                    if(token==='N') {\n                        text += 'North';\n                        text += ' ';\n                    } else if(token==='NNE') {\n                        text += 'North-Northeast';\n                        text += ' ';\n                    } else if(token==='NE') {\n                        text += 'Northeast';\n                        text += ' ';\n                    } else if(token==='ENE') {\n                        text += 'East-Northeast';\n                        text += ' ';\n                    } else if(token==='E') {\n                        text += 'East';\n                        text += ' ';\n                    } else if(token==='ESE') {\n                        text += 'East-Southeast';\n                        text += ' ';\n                    } else if(token==='SE') {\n                        text += 'Southeast';\n                        text += ' ';\n                    } else if(token==='SSE') {\n                        text += 'South-Southeast';\n                        text += ' ';\n                    } else if(token==='S') {\n                        text += 'South';\n                        text += ' ';\n                    } else if(token==='SSW') {\n                        text += 'South-Southwest';\n                        text += ' ';\n                    } else if(token==='SW') {\n                        text += 'Southwest';\n                        text += ' ';\n                    } else if(token==='WSW') {\n                        text += 'West-Southwest';\n                        text += ' ';\n                    } else if(token==='W') {\n                        text += 'West';\n                        text += ' ';\n                    } else if(token==='WNW') {\n                        text += 'West-Northwest';\n                        text += ' ';\n                    } else if(token==='NW') {\n                        text += 'Northwest';\n                        text += ' ';\n                    } else if(token==='NNW') {\n                        text += 'North-Northwest';\n                        text += ' ';\n                    } else {\n                        text += token;\n                        text += ' '; \n                    }\n                    windFound = false;\n                    \n                } else {\n                    if( (token.indexOf('Winds')>=0) || (token.indexOf('winds')>=0) ) {\n                        windFound = true;\n                    }\n                    \n                    if( token.indexOf('F.')>=0) {\n                        token = token.replace('F.', 'ºF.');\n                    }\n                    text += token;\n                    text += ' ';\n                }\n            }\n        };\n        \n        msg.payload.text = text;\n    }\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1998.333251953125,
+        "y": 542.6666870117188,
+        "wires": [
+            [
+                "286a4d3b.bbaee2",
+                "7da81a0c.ed493c"
+            ]
+        ]
+    },
+    {
+        "id": "73893e53.f5ddd8",
+        "type": "template",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "html",
+        "syntax": "mustache",
+        "template": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Voice Control Demo</title>\n  <script src=\"https://code.jquery.com/jquery-3.2.1.min.js\"\n\t\t\t  integrity=\"sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=\"\n\t\t\t  crossorigin=\"anonymous\"></script>\n  \n  <script type=\"text/javascript\">\n\n    navigator.mediaDevices.getUserMedia({ audio: true})\n        .then(function(stream) {\n            $(\"#stop\").prop( \"disabled\", true );\n            $(\"#record\").prop( \"disabled\", false );\n\n    \t\tvar mediaRecorder = new MediaRecorder(stream);\n\t\t\n    \t\t$(\"#record\").click(function() {\n    \t\t\tchunks = [];\n    \t\t\tmediaRecorder.start();\n    \t\t\t$(\"#record\").css('background', 'red');\n    \t\t\t$(\"#stop\").prop( \"disabled\", false );\n    \t\t\t$(\"#record\").prop( \"disabled\", true );\n    \t\t\t$(\"#text\").html(\"Recording.....\");\n    \t\t});\n    \n    \t\t$(\"#stop\").click(function() {\n    \t\t\tmediaRecorder.stop();\n    \t\t\t$(\"#record\").css('background', '');\n    \t\t\t$(\"#stop\").prop( \"disabled\", true );\n    \t\t\t$(\"#record\").prop( \"disabled\", false );\n    \t\t\t$(\"#text\").html(\"Processing.....\");\n    \t\t});\n\t\t\n    \t\tfunction sendVoice(voice) {\n    \t\t\turl = \"https://voice-control.mybluemix.net/request\";\n    \n    \t\t\tvar fileReader = new window.FileReader();\n    \t\t\tfileReader.onloadend = function() {\n    \t\t\t\tvar base64data = fileReader.result;\n    \n    \t\t\t\tvar json = {};\n    \t\t\t\tif(base64data.indexOf('webm')>0) {\n    \t\t\t\t    json.format = 'webm';\n    \t\t\t\t} else if(base64data.indexOf('ogg')>0) {\n    \t\t\t\t    json.format = 'ogg';\n    \t\t\t\t}\n                    json.voice = base64data.substr(base64data.indexOf('base64,')+'base64,'.length);\n    \t\t\t\t\n                    var settings = {\n    \t\t\t\t\t\"async\" : true,\n    \t\t\t\t\t\"crossDomain\" : true,\n    \t\t\t\t\t\"url\" : url,\n    \t\t\t\t\t\"method\" : \"POST\",\n    \t\t\t\t\t\"contentType\" : \"application/json\",\n    \t\t\t\t\t\"data\" : JSON.stringify(json)\n    \t\t\t\t};\n    \n    \t\t\t\t$.ajax(settings).done(\n    \t\t\t\t\t\tfunction(response) {\n    \t\t\t\t\t\t\t$(\"#text\").html(response);\n    \t\t\t\t\t\t});\n    \n    \t\t\t};\n    \t\t\tfileReader.readAsDataURL(voice);\n    \n    \t\t}\n    \t\t\n    \n    \t\tmediaRecorder.onstop = function(e) {\n    \t\t\tsendVoice(chunks[0]);\n    \t\t}\n    \n    \t\tmediaRecorder.ondataavailable = function(e) {\n    \t\t\tchunks.push(e.data);\n    \t\t}\n\n        })\n        .catch(function(err) {\n          console.log(err.name + \": \" + err.message);\n        });\n\n  </script>\n  \n</head>\n<body style=\"text-align: center; margin-top: 100px;\">\n    <div style=\"font-size: 56px; font-family: helvetica\">\n\t\tVoice Control Demo\n\t</div>\n\t<div id=\"buttons\" style=\"padding-bottom: 20px; margin-top: 30px;\">\n\t\t<button id=\"record\" disabled>Record</button>\n\t\t<button id=\"stop\" disabled>Stop</button>\n\t</div>\n    <div id=\"text\" style=\"font-size: 18px; font-family: helvetica; margin-top: 30px;\">\n\t\t\n\t</div>\n</body>\n</html>",
+        "x": 337.857177734375,
+        "y": 840.8839111328125,
+        "wires": [
+            [
+                "4f91ad17.49f2ec"
+            ]
+        ]
+    },
+    {
+        "id": "18866ae9.f1f6cd",
+        "type": "http in",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "url": "/voicecontrol",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 132.07144165039062,
+        "y": 843.6785888671875,
+        "wires": [
+            [
+                "73893e53.f5ddd8"
+            ]
+        ]
+    },
+    {
+        "id": "4f91ad17.49f2ec",
+        "type": "http response",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "x": 495.0714416503906,
+        "y": 840.2142639160156,
+        "wires": []
+    },
+    {
+        "id": "71fcd467.17d19c",
+        "type": "http in",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "url": "/request",
+        "method": "post",
+        "swaggerDoc": "",
+        "x": 75,
+        "y": 476.07147216796875,
+        "wires": [
+            [
+                "104535d0.bd6d9a"
+            ]
+        ]
+    },
+    {
+        "id": "be171b0b.662db",
+        "type": "http response",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "x": 1103.5237426757812,
+        "y": 681.047607421875,
+        "wires": []
+    },
+    {
+        "id": "9b6adfd5.213b28",
+        "type": "base64",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "x": 454.7616882324219,
+        "y": 474.1666564941406,
+        "wires": [
+            [
+                "690b4c4e.cd26fc"
+            ]
+        ]
+    },
+    {
+        "id": "104535d0.bd6d9a",
+        "type": "change",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "audioformat",
+                "pt": "msg",
+                "to": "payload.format",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.voice",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 274.99993896484375,
+        "y": 474.6427917480469,
+        "wires": [
+            [
+                "9b6adfd5.213b28"
+            ]
+        ]
+    },
+    {
+        "id": "690b4c4e.cd26fc",
+        "type": "switch",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "property": "audioformat",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "webm",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "outputs": 2,
+        "x": 605.8331909179688,
+        "y": 471.2499694824219,
+        "wires": [
+            [
+                "55d38bab.a4fc0c"
+            ],
+            [
+                "c7592e33.45ad4"
+            ]
+        ]
+    },
+    {
+        "id": "42420dd4.99c6dc",
+        "type": "change",
+        "z": "d442295b.bcc25",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "transcription",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1061,
+        "y": 577.5,
+        "wires": [
+            [
+                "be171b0b.662db"
+            ]
+        ]
+    },
+    {
+        "id": "55d38bab.a4fc0c",
+        "type": "ffmpeg-conversion",
+        "z": "d442295b.bcc25",
+        "name": "Convert to wav",
+        "format": "wav",
+        "audiochannels": "mono",
+        "x": 780,
+        "y": 400,
+        "wires": [
+            [
+                "c7592e33.45ad4"
+            ]
+        ]
+    }
+]
